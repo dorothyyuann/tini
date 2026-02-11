@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Valentine</title>
+    <style>
+      :root {
+        --bg1: #0b1020;
+        --bg2: #1a0b2e;
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.65);
+        --card: rgba(255, 255, 255, 0.06);
+        --stroke: rgba(255, 255, 255, 0.12);
+
+        --yesBase: rgba(255, 77, 141, 0.28);
+        --yesBase2: rgba(255, 77, 141, 0.12);
+        --yesBorder: rgba(255, 77, 141, 0.35);
+
+        --noBg: rgba(255, 255, 255, 0.06);
+        --noBorder: rgba(255, 255, 255, 0.16);
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+
+      body {
+        color: var(--text);
+        background: radial-gradient(1200px 800px at 20% 10%, #1c2b6f 0%, transparent 55%),
+                    radial-gradient(900px 700px at 85% 30%, #7a1b5e 0%, transparent 55%),
+                    linear-gradient(160deg, var(--bg1), var(--bg2));
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        overflow: hidden;
+      }
+
+      .wrap {
+        width: min(520px, 100%);
+        display: grid;
+        gap: 16px;
+        padding: 18px;
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        position: relative;
+        z-index: 2;
+      }
+
+      .title {
+        font-size: clamp(26px, 6vw, 42px);
+        line-height: 1.05;
+        text-align: center;
+        letter-spacing: -0.02em;
+        margin: 10px 0 0;
+        position: relative;
+      }
+
+      .title::after {
+        content: "";
+        position: absolute;
+        inset: -12px -18px;
+        background: radial-gradient(closest-side at 30% 30%, rgba(255,255,255,0.18), transparent 60%),
+                    radial-gradient(closest-side at 70% 50%, rgba(255,77,141,0.16), transparent 60%),
+                    radial-gradient(closest-side at 45% 80%, rgba(140,140,255,0.10), transparent 60%);
+        filter: blur(10px);
+        opacity: 0.9;
+        animation: floatGlow 3.5s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      @keyframes floatGlow {
+        0%, 100% { transform: translateY(0px) scale(1); opacity: 0.75; }
+        50%      { transform: translateY(-6px) scale(1.02); opacity: 1; }
+      }
+
+      .subtitle {
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+        margin: 2px 0 0;
+      }
+
+      .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      button {
+        appearance: none;
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 16px;
+        padding: 14px 14px;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text);
+        background: rgba(255,255,255,0.06);
+        transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, border-color 180ms ease, filter 180ms ease;
+        touch-action: manipulation;
+        user-select: none;
+      }
+
+      button:active { transform: scale(0.98); }
+
+      .yes {
+        background: linear-gradient(180deg, var(--yesBase), var(--yesBase2));
+        border-color: var(--yesBorder);
+        box-shadow: 0 10px 24px rgba(255,77,141,0.18);
+      }
+
+      .no {
+        background: var(--noBg);
+        border-color: var(--noBorder);
+      }
+
+      .row { display: grid; gap: 12px; }
+
+      .media {
+        display: none;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.25);
+      }
+      .media img { width: 100%; height: auto; display: block; }
+
+      .videoWrap {
+        display: none;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.25);
+      }
+      .videoWrap iframe {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border: 0;
+        display: block;
+        background: rgba(0,0,0,0.25);
+      }
+
+      .screen {
+        display: none;
+        animation: popIn 260ms ease both;
+      }
+      .screen.active { display: block; }
+
+      @keyframes popIn {
+        from { opacity: 0; transform: translateY(8px) scale(0.99); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .neon-red {
+        border-color: rgba(255, 0, 60, 0.6) !important;
+        background: linear-gradient(180deg, rgba(255,0,60,0.35), rgba(255,0,60,0.18)) !important;
+        filter: saturate(1.2);
+      }
+
+      .footer-note {
+        text-align: center;
+        color: rgba(255,255,255,0.55);
+        font-size: 12px;
+        margin-top: 6px;
+        min-height: 16px;
+      }
+
+      /* Effects layer */
+      #fx {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
+        overflow: hidden;
+      }
+
+      .heart {
+        position: absolute;
+        font-size: 18px;
+        filter: drop-shadow(0 8px 14px rgba(0,0,0,0.35));
+        animation: floatUp linear forwards;
+        opacity: 0.95;
+        will-change: transform, opacity;
+      }
+
+      @keyframes floatUp {
+        0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: 0.0; }
+        10%  { opacity: 0.95; }
+        100% { transform: translate3d(var(--dx), calc(-1 * var(--rise)), 0) scale(var(--s)) rotate(var(--rot)); opacity: 0; }
+      }
+
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 14px;
+        border-radius: 3px;
+        opacity: 0.95;
+        animation: confFall linear forwards;
+        will-change: transform, opacity;
+        box-shadow: 0 12px 22px rgba(0,0,0,0.25);
+      }
+
+      @keyframes confFall {
+        0%   { transform: translate3d(0, -20px, 0) rotate(0deg); opacity: 0; }
+        10%  { opacity: 0.95; }
+        100% { transform: translate3d(var(--dx), var(--fall), 0) rotate(var(--rot)); opacity: 0; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="fx" aria-hidden="true"></div>
+
+    <main class="wrap" role="application" aria-label="Valentine app">
+      <!-- Screen 1 -->
+      <section id="screen1" class="screen active">
+        <div class="row">
+          <h1 class="title">would you be my valentine?</h1>
+          <div class="buttons">
+            <button class="yes" id="yes1" type="button">Yes</button>
+            <button class="no" id="no1" type="button">No</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 2 -->
+      <section id="screen2" class="screen">
+        <div class="row">
+          <h1 class="title">do you love me?</h1>
+
+          <div class="media" id="sadMedia">
+            <img
+              alt="sad reaction"
+              src="https://res.cloudinary.com/dmhd5vora/image/upload/v1770731054/IMG_2691_bmlunt.jpg"
+            />
+          </div>
+
+          <div class="videoWrap" id="videoWrap">
+            <iframe
+              id="videoFrame"
+              title="Love video"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <div class="buttons" id="loveButtons">
+            <button class="yes" id="yes2" type="button">Yes</button>
+            <button class="no" id="no2" type="button">No</button>
+          </div>
+
+          <div class="footer-note" id="status"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // ---------- Config (your link) ----------
+      const DRIVE_VIDEO_LINK =
+        "https://drive.google.com/file/d/1cDzksm5J-AFOnZ_a2mOT1cqenVuTsKfr/view?usp=drivesdk";
+
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+      function toDrivePreviewUrl(url) {
+        try {
+          const u = new URL(url);
+          if (u.hostname.includes("drive.google.com")) {
+            const m = u.pathname.match(/\/file\/d\/([^/]+)/);
+            if (m && m[1]) return `https://drive.google.com/file/d/${m[1]}/preview`;
+            const id = u.searchParams.get("id");
+            if (id) return `https://drive.google.com/file/d/${id}/preview`;
+          }
+          return url;
+        } catch {
+          return url;
+        }
+      }
+
+      function toDriveEmbedAutoplay(url) {
+        const preview = toDrivePreviewUrl(url);
+        return `${preview}?autoplay=1`;
+      }
+
+      function applyScale(btn, scale) {
+        btn.style.transform = `scale(${scale})`;
+      }
+
+      // ---------- Effects ----------
+      const fx = document.getElementById("fx");
+      const heartChars = ["💖", "💘", "💕", "💞", "💓", "❤️"];
+
+      function spawnHeartBurst({ x, y, count = 18 }) {
+        const rect = fx.getBoundingClientRect();
+        const baseX = clamp(x ?? rect.width / 2, 0, rect.width);
+        const baseY = clamp(y ?? rect.height / 2, 0, rect.height);
+
+        for (let i = 0; i < count; i++) {
+          const el = document.createElement("div");
+          el.className = "heart";
+          el.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+
+          const dx = (Math.random() * 2 - 1) * 140;
+          const rise = 280 + Math.random() * 220;
+          const s = 0.8 + Math.random() * 1.2;
+          const rot = (Math.random() * 2 - 1) * 40;
+          const dur = 1100 + Math.random() * 900;
+
+          el.style.left = `${baseX}px`;
+          el.style.top = `${baseY}px`;
+          el.style.setProperty("--dx", `${dx}px`);
+          el.style.setProperty("--rise", `${rise}px`);
+          el.style.setProperty("--s", s.toFixed(2));
+          el.style.setProperty("--rot", `${rot}deg`);
+          el.style.animationDuration = `${dur}ms`;
+
+          fx.appendChild(el);
+          setTimeout(() => el.remove(), dur + 50);
+        }
+      }
+
+      function randConfettiColor() {
+        const h = Math.floor(Math.random() * 360);
+        const s = 80 + Math.floor(Math.random() * 15);
+        const l = 55 + Math.floor(Math.random() * 10);
+        return `hsl(${h} ${s}% ${l}%)`;
+      }
+
+      function spawnConfetti({ x, y, count = 40 }) {
+        const rect = fx.getBoundingClientRect();
+        const baseX = clamp(x ?? rect.width / 2, 0, rect.width);
+        const baseY = clamp(y ?? rect.height / 2, 0, rect.height);
+
+        for (let i = 0; i < count; i++) {
+          const el = document.createElement("div");
+          el.className = "confetti";
+          el.style.background = randConfettiColor();
+
+          const dx = (Math.random() * 2 - 1) * 220;
+          const fall = 520 + Math.random() * 500;
+          const rot = (Math.random() * 2 - 1) * 720;
+          const dur = 900 + Math.random() * 1100;
+
+          el.style.left = `${baseX}px`;
+          el.style.top = `${baseY}px`;
+          el.style.setProperty("--dx", `${dx}px`);
+          el.style.setProperty("--fall", `${fall}px`);
+          el.style.setProperty("--rot", `${rot}deg`);
+          el.style.animationDuration = `${dur}ms`;
+
+          fx.appendChild(el);
+          setTimeout(() => el.remove(), dur + 50);
+        }
+      }
+
+      function celebrateFromElement(el) {
+        const r = el.getBoundingClientRect();
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        spawnHeartBurst({ x, y, count: 22 });
+        spawnConfetti({ x, y, count: 55 });
+      }
+
+      // ---------- Elements ----------
+      const yes1 = document.getElementById("yes1");
+      const no1 = document.getElementById("no1");
+      const yes2 = document.getElementById("yes2");
+      const no2 = document.getElementById("no2");
+
+      const screen1 = document.getElementById("screen1");
+      const screen2 = document.getElementById("screen2");
+
+      const sadMedia = document.getElementById("sadMedia");
+      const status = document.getElementById("status");
+
+      const videoWrap = document.getElementById("videoWrap");
+      const videoFrame = document.getElementById("videoFrame");
+      const loveButtons = document.getElementById("loveButtons");
+
+      function showScreen(n) {
+        screen1.classList.toggle("active", n === 1);
+        screen2.classList.toggle("active", n === 2);
+      }
+
+      // ---------- State ----------
+      let noCount1 = 0;
+      let noCount2 = 0;
+
+      // ---------- Screen 1 behavior ----------
+      no1.addEventListener("click", () => {
+        noCount1 += 1;
+
+        const yesScale = clamp(1 + noCount1 * 0.18, 1, 2.8);
+        const noScale = clamp(1 - noCount1 * 0.10, 0.35, 1);
+
+        applyScale(yes1, yesScale);
+        applyScale(no1, noScale);
+
+        no1.animate(
+          [
+            { transform: `scale(${noScale}) rotate(0deg)` },
+            { transform: `scale(${noScale}) rotate(-6deg)` },
+            { transform: `scale(${noScale}) rotate(0deg)` }
+          ],
+          { duration: 180, easing: "ease-out" }
+        );
+      });
+
+      yes1.addEventListener("click", (e) => {
+        showScreen(2);
+        celebrateFromElement(e.currentTarget);
+      });
+
+      // ---------- Screen 2 behavior ----------
+      no2.addEventListener("click", () => {
+        noCount2 += 1;
+
+        sadMedia.style.display = "block";
+        status.textContent = "😔 okay…";
+
+        yes2.classList.add("neon-red");
+        const glow = clamp(noCount2 * 10, 10, 65);
+        const alpha = clamp(0.25 + noCount2 * 0.07, 0.25, 0.95);
+
+        yes2.style.boxShadow =
+          `0 0 ${glow}px rgba(255,0,60,${alpha}), 0 18px 40px rgba(255,0,60,${alpha * 0.35})`;
+
+        const noScale = clamp(1 - noCount2 * 0.08, 0.45, 1);
+        applyScale(no2, noScale);
+
+        const r = no2.getBoundingClientRect();
+        spawnHeartBurst({ x: r.left + r.width / 2, y: r.top + r.height / 2, count: 10 });
+      });
+
+      yes2.addEventListener("click", (e) => {
+        celebrateFromElement(e.currentTarget);
+
+        loveButtons.style.display = "none";
+        sadMedia.style.display = "none";
+        status.textContent = "YAYYYYY 💗";
+
+        videoWrap.style.display = "block";
+
+        // Autoplay inside page (Drive preview iframe)
+        videoFrame.src = toDriveEmbedAutoplay(DRIVE_VIDEO_LINK);
+
+        setTimeout(() => {
+          const r = videoWrap.getBoundingClientRect();
+          spawnConfetti({ x: r.left + r.width / 2, y: r.top + 40, count: 70 });
+          spawnHeartBurst({ x: r.left + r.width / 2, y: r.top + 60, count: 26 });
+        }, 450);
+      });
+    </script>
+  </body>
+</html>
